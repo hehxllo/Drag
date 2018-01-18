@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #div{
+            width: 100px;
+            height: 100px;
+            background: #f00;
+            position: absolute;
+        }
+        #div-cp{
+            width: 200px;
+            height: 200px;
+            background: #0f0;
+            position: absolute;
+        }
+    </style>
+    <script>
+        /*var oDiv=null;
+        var disX=0;
+        var disY=0;
+        window.onload=function () {
+            oDiv=document.getElementById('div');
+
+            init();
+        };
+        function init() {
+            oDiv.onmousedown=fnDown;
+        }
+        function fnDown(ev) {
+            disX=ev.clientX-this.offsetLeft;
+            disY=ev.clientY-this.offsetTop;
+            document.onmousemove=fnMove;
+            document.onmouseup=fnUp;
+            return false;
+        }
+        function fnMove(ev2) {
+            oDiv.style.left=ev2.clientX-disX+'px';
+            oDiv.style.top=ev2.clientY-disY+'px';
+        }
+        function fnUp() {
+            document.onmousemove=null;
+        }*/
+        window.onload=function () {
+            var drag1=new Drag('div');
+            drag1.init();
+            var drag2=new Drag('div-cp');
+            drag2.init();
+        };
+        function Drag(id) {
+            this.oDiv=document.getElementById(id);
+            this.disX=0;
+            this.disY=0;
+        }
+        Drag.prototype.init=function () {
+            var This=this;
+            this.oDiv.onmousedown=function (ev) {
+                //ev=ev||window.event;
+                This.fnDown(ev);
+                return false;
+            };
+        };
+        Drag.prototype.fnDown=function (ev) {
+            var This=this;
+            this.disX=ev.clientX-this.oDiv.offsetLeft;
+            this.disY=ev.clientY-this.oDiv.offsetTop;
+            document.onmousemove=function (ev) {
+                /*ev2=ev2||window.event;*/
+                This.fnMove(ev);
+            };
+            document.onmouseup=function () {
+                This.fnUp();
+            };
+        };
+        Drag.prototype.fnMove=function (ev) {
+            this.oDiv.style.left=ev.clientX-this.disX+'px';
+            this.oDiv.style.top=ev.clientY-this.disY+'px';
+
+        };
+        Drag.prototype.fnUp=function () {
+            document.onmousemove=null;
+            this.oDiv.style.zIndex='998';
+        };
+
+    </script>
+</head>
+<body>
+<div id="div"></div>
+<div id="div-cp"></div>
+</body>
+</html>
