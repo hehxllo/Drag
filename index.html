@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #div1,#div2{
+            width: 150px;
+            height: 300px;
+            background: #666;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            box-shadow: 0 0 15px 3px #000000;
+            border-radius: 5px;
+        }
+        #div2{
+            background: #333;
+            left: 170px;
+        }
+    </style>
+    <script>
+        window.onload=function () {
+            var drag1=new Drag('div1');
+            drag1.init();
+            var drag2=new ChildDrag('div2');
+            drag2.init();
+        };
+        function Drag(id) {
+            this.oDiv=document.getElementById(id);
+            this.disX=0;
+            this.disY=0;
+        }
+        Drag.prototype.init=function () {
+            var This=this;
+            this.oDiv.onmousedown=function (ev) {
+
+                This.fnDown(ev);
+            };
+        };
+        Drag.prototype.fnDown=function (ev) {
+            var This=this;
+            this.disX=ev.clientX-this.oDiv.offsetLeft;
+            this.disY=ev.clientY-this.oDiv.offsetTop;
+            document.onmousemove=function (ev) {
+                This.fnMove(ev);
+            };
+            document.onmouseup=function () {
+                This.fnUp();
+            };
+        };
+        Drag.prototype.fnMove=function (ev) {
+            this.oDiv.style.left=ev.clientX-this.disX+'px';
+            this.oDiv.style.top=ev.clientY-this.disY+'px';
+        };
+        Drag.prototype.fnUp=function () {
+            document.onmousemove=null;
+            document.onmouseup=null;
+        };
+        //inherit
+        function ChildDrag(id) {
+            Drag.call(this,id);
+        }
+        for (var attr in Drag.prototype){
+            ChildDrag.prototype[attr]=Drag.prototype[attr];
+        }
+        ChildDrag.prototype.fnMove=function (ev) {
+            var L=ev.clientX-this.disX;
+            var T=ev.clientY-this.disY;
+            if(L<0){
+                L=0;
+            }else if(L>document.documentElement.clientWidth-this.oDiv.offsetWidth){
+                L=document.documentElement.clientWidth-this.oDiv.offsetWidth;
+            }
+            if(T<0){
+                T=0;
+            }else if(T>document.documentElement.clientHeight-this.oDiv.offsetHeight){
+                T=document.documentElement.clientHeight-this.oDiv.offsetHeight;
+            }
+            this.oDiv.style.outline='3px dashed #fff';
+            this.oDiv.style.left=L+'px';
+            this.oDiv.style.top=T+'px';
+        };
+        ChildDrag.prototype.fnUp=function () {
+            this.oDiv.style.outline='none';
+            document.onmousemove=null;
+            document.onmouseup=null;
+        };
+    </script>
+</head>
+<body>
+<div id="div1"></div>
+<div id="div2"></div>
+</body>
+</html>
